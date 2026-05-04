@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
 import express from "express";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { NodeStreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/node/streamableHttp.js";
+import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import { z } from "zod";
 
 const MARKETPLACE_SECRET = process.env.AGENTICMARKET_SECRET || "dev-secret";
@@ -62,7 +62,7 @@ app.get("/health", (_req, res) => res.status(200).send("OK"));
 app.post("/mcp", express.json(), async (req, res) => {
   try {
     const server = await createMcpServer();
-    const transport = new NodeStreamableHTTPServerTransport({
+    const transport = new StreamableHTTPServerTransport({
       sessionIdGenerator: () => randomUUID(),
     });
     await server.connect(transport);
