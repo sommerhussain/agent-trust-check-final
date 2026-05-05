@@ -12,14 +12,17 @@ const knownBadActors = [
 
 const app = express();
 
-// Secret check middleware
-app.use("/mcp", (req, res, next) => {
-  const secret = req.headers["x-agenticmarket-secret"];
-  if (secret !== MARKETPLACE_SECRET) {
-    return res.status(401).json({ error: "Unauthorized" });
-  }
-  next();
-});
+// ── SECRET MIDDLEWARE (temporarily disabled for probe) ───────────
+// Uncomment this block AFTER you receive the proxy_secret from AgenticMarket
+// and set it as AGENTICMARKET_SECRET in Railway.
+//
+// app.use("/mcp", (req, res, next) => {
+//   const secret = req.headers["x-agenticmarket-secret"];
+//   if (secret !== MARKETPLACE_SECRET) {
+//     return res.status(401).json({ error: "Unauthorized" });
+//   }
+//   next();
+// });
 
 app.get("/health", (_req, res) => res.status(200).send("OK"));
 
@@ -54,13 +57,13 @@ app.post("/mcp", express.json(), async (req, res) => {
       }
     );
 
-    // sessionIdGenerator: undefined = STATELESS — no session tracking
+    // sessionIdGenerator: undefined = STATELESS
     const transport = new StreamableHTTPServerTransport({
       sessionIdGenerator: undefined,
     });
 
     await server.connect(transport);
-    // Pass parsed body as third argument (required by SDK)
+    // Pass parsed body as third argument
     await transport.handleRequest(req, res, req.body);
 
     res.on("close", () => {
