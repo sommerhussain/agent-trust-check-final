@@ -12,17 +12,14 @@ const knownBadActors = [
 
 const app = express();
 
-// ── SECRET MIDDLEWARE (temporarily disabled for probe) ───────────
-// Uncomment this block AFTER you receive the proxy_secret from AgenticMarket
-// and set it as AGENTICMARKET_SECRET in Railway.
-//
-// app.use("/mcp", (req, res, next) => {
-//   const secret = req.headers["x-agenticmarket-secret"];
-//   if (secret !== MARKETPLACE_SECRET) {
-//     return res.status(401).json({ error: "Unauthorized" });
-//   }
-//   next();
-// });
+// ── SECRET MIDDLEWARE (ACTIVE) ──────────────────────────────────────
+app.use("/mcp", (req, res, next) => {
+  const secret = req.headers["x-agenticmarket-secret"];
+  if (secret !== MARKETPLACE_SECRET) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+  next();
+});
 
 app.get("/health", (_req, res) => res.status(200).send("OK"));
 
